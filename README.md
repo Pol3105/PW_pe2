@@ -163,6 +163,104 @@ Pasos que he realizado para hacer la Practica de manera correcta:
 
     Basicamente comprueba que si no existe la variable o es un 0 nos redirije al inicio y te da el warning de que no tienes autorización para acceder a esta ubiccación.
 
-    Ahora voy a gestionar como voy a ver todas las actividades y luego gestionaré como crearlas y modificarlas. Para ver todas las actividades añado en /admin/actividades.php la siguiente información:
+    Para empezar a gestionar las actividades primero voy a hacer la tabla en la base de datos y le voy a añadir varias actividades para así poder ver que funciona , también voy a tener que gestionar como se ven dichas actividades, primero haré lo de sql de la forma:
+
+        CREATE TABLE actividades (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        tipo VARCHAR(50) NOT NULL,
+        modalidad VARCHAR(50) NOT NULL,
+        pistas VARCHAR(60)
+        );
+        INSERT INTO actividades (tipo, modalidad, pistas) VALUES
+        ('Futbol', 'En Equipo', '1'),
+        ('Natacion', 'En Equipo', '5'),
+        ('Tenis', 'Individual', '3'),
+        ('Futbol', 'En Equipo', '12');
+
+    Una vez he hecho esto tengo que crear la clase que voy a utilizar para gestionar las actividades que va a ser /models/Actividades.php , una vez ya hemos hecho esto podemos pasar a como vamos a traernos todas las actividades de la base de datos:
+
+    $actividades = Actividades::all();
+
+    Así tengo todas las actividades de la base de datos en un array que es $actividades una vez tengo esto lo muestro por pantalla al administrador de la forma:
+
+            <?php
+                foreach($actividades as $actividad):
+            ?>
+                <div class="actividad">
+                    <?php
+                        if( $actividad->tipo == 'Futbol'):
+                    ?>
+                        <img src="../imagen/futbol/futbol1.webp" alt="Fútbol">
+                    <?php
+                        endif;
+                    ?>
+
+                    <?php
+                        if( $actividad->tipo == 'Natacion'):
+                    ?>
+                        <img src="../imagen/natacion/natacion1.webp" alt="Fútbol">
+                    <?php
+                        endif;
+                    ?>
+
+                    <?php
+                        if( $actividad->tipo == 'Tenis'):
+                    ?>
+                        <img src="../imagen/tenis/tenis1.webp" alt="Fútbol">
+                    <?php
+                        endif;
+                    ?>
+
+                    <h3><?php echo $actividad->tipo ?></h3>
+                    <p><strong>Modalidad:</strong> <?php echo $actividad->modalidad ?></p>
+                    <p>Pistas: <?php echo $actividad->pistas ?></p>
+                </div>
+                
+            <?php
+                endforeach;
+            ?>
+
+    Ahora tengo que añadir los botones en cada una de ellas para poder modificarlas , o eliminarlas:
+
+        <a class="boton_admin" href="modificar.php?id=<?php echo $actividad->id; ?>">Modificar</a>
+        <a class="boton_admin" href="eliminar.php?id=<?php echo $actividad->id; ?>">Eliminar</a>
+
+    Como podemos observar he pasado a través del metodo get el id de la actividad, para saber a que actividad nos estamos refiriendo, ahora voy a hacer los archivos php /admin/modificar.php y /admin/eliminar.php, empezamos por el de eliminar que es mas simple:
+
+        require_once( __DIR__ . '/../templates/autorizado.php');
+
+        if ($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            $actividad = Actividades::where("id", $_GET['id']);
+
+            $resultado = $actividad->eliminar();
+
+            if( $resultado ){
+                header('Location: /admin/actividades.php?eliminar=exito');
+            }
+            else{
+                header('Location: /admin/actividades.php?eliminar=error');
+            }
+        }
+        else{
+            header('Location: /admin/actividades.php?eliminar=error');
+        }
+
+    Aqui gestino que si el id se ha pasado de manera correcta se elimine , y sigo añadiendo el template ay que nos encontramos en la carpeta admin. gestiono las alertas como lo he hecho en el indice , por lo tanto ahora en las actividades.php tengo que gestionarlo asi:
+
+        if ($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            if( isset($_GET['eliminar']) && $_GET['eliminar'] === 'exito'){
+                Actividades::setAlerta('exito', 'Se ha eliminado de manera correcta');
+                $alertas = Actividades::getAlertas();
+            }
+
+            if( isset($_GET['eliminar']) && $_GET['eliminar'] === 'error'){
+                Actividades::setAlerta('error', 'No se ha podido eliminar');
+                $alertas = Actividades::getAlertas();
+            }
+        }
+
+    Una vez ya he terminado y gestionado como eliminar las actividades , voy a pasar a como modificarlas, es decir , voy a pasar a hacer el código de admin/modificar.php:
 
         
