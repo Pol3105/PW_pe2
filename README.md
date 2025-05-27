@@ -263,4 +263,268 @@ Pasos que he realizado para hacer la Practica de manera correcta:
 
     Una vez ya he terminado y gestionado como eliminar las actividades , voy a pasar a como modificarlas, es decir , voy a pasar a hacer el código de admin/modificar.php:
 
+        if ($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            $actividad = Actividades::where("id", $_GET['id']);
+        }
+
+    Recojo que actividad es la que quiero modificar , y la guardo en un objeto de la clase Actividades, una vez echo esto voy a hacer el formulario para modificar el objeto:
+
+        <input type="text"
+            id="tipo"
+            placeholder="tipo..."
+            name="tipo"
+            value="<?php echo $actividad->tipo ?>"
+            required
+        />
+
+    Es importando añadir el valor value=... , para que el que está modificando vea el valor actual que tiene dicha actividad, una vez ya lo sabe lo que tiene que hacer es borrar introducir un valor nuevo y darle al boton , que va a redireccionar a la misma página , y vamos a gestionarlo ahora con:
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST')
+        {
+            $encontrado = new Actividades($_POST);
+            
+            if( $encontrado ){
+                $encontrado->guardar();
+                Actividades::setAlerta('exito','Actividad modificada de manera exitosa');
+
+                $actividad = Actividades::where("id", $_POST['id']);
+            }
+            else{
+                Actividades::setAlerta('error','Ha ocurrido un error');
+            }
+        }
+    
+    Aqui gestiono la actividad que ha sido modificada con el POST , tras esto la guardo en la base de datos , ajusto la alerta de que me ha funcionado de manera correcta y por último actualizo $actividad para que en el propio formulario se meustre ya modificada la actividad( es lo que he comentado antes de los value ).
+
+    Una vez ya he terminado de crear el el modificar.php voy a hacer el crear.php , aunque dandome cuenta creo que no es necesario hacer ningún crear, ya que en el modificar.php puedo ajustarlo para que funcione para ambas cosas según le pases por referencia las actividades o no.
+    Para hacer todo esto he tenido que  hacer una serie de cambios en el modificar.php para no tener que hacer dos archivoss innecesariamente, ya que el formulario es el mismo. Lo primero que he realizado es cambiar cuando se recibe un método post:
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST')
+        {
+            $encontrado = new Actividades($_POST);
+            
+            if( !isset($_POST['id']) ){
+                $encontrado->guardar();
+                Actividades::setAlerta('exito','Actividad creada de manera exitosa');
+            }
+            else{
+                if( $encontrado ){
+                    $encontrado->guardar();
+                    $actividad = Actividades::where("id", $_POST['id']);
+                    Actividades::setAlerta('exito','Actividad modificada de manera exitosa');
+                }
+                else{
+                    Actividades::setAlerta('error','Ha ocurrido un error');
+                }
+            }
+        }
+
+    El cambio basicamente es que si no paso una actividad con el método get en el form no mando un id de la forma:
+
+        <?php
+            if( $actividad->id):
+        ?>
+            <input type="hidden" name="id" value="<?php echo $actividad->id ?>">
+        <?php
+            endif;
+        ?>
+
+    En la vista también he cambiado algunas cosas para que se vea que estás modificando o creando según:
+
+        <?php
+            if( $actividad->id):
+        ?>
+            <input type="submit" class="boton submit" value="Modificar">
+        <?php
+            else:
+        ?>
+            <input type="submit" class="boton submit" value="Crear">
+        <?php
+            endif;
+        ?>
+
+    Ademas de:
+
+            if( is_null($actividad->id)):
+        ?>  
+            <h2>Crear una nueva actividad</h2>
+        <?php   
+            else:
+        ?>
+            <h2>Estamos modificando la pista id= <?php echo $actividad->id ?></h2>
+        <?php   
+            endif;
+        ?>
+
+    Ya teniendo hecho todo esto , voy a ver como mostrar más de nueve actividades con la paginación. PAra realizar la paginación primero he realizado unos cáculos básicos que son:
+
+        $numero_actividades = count($actividades);
+        $num_pag = ceil($numero_actividades/9);
+        $inicio = ($pag - 1) * 9;
+        $fin = min($inicio + 9, $numero_actividades); // No pasarse del total
+
+    Estos me van a ayudar a saber el rango que tengo que manejar , teniendo en cuenta que $pag inicia su valor en 1.Para hacer la paginación hago que se muestre del array de $actividades que muestra desde $inicio hasta $fin según en que $pag nos encontremos. Para poner que la flechas he utilzado el siguiente código:
+
+        <?php
+            if ($pag > 1):
+        ?>  
+            a class="boton" href="?pagina=<?php echo $pag-1 ?>">⬅ Anterior</a>
+        <?php
+            endif;
+        ?>
+        <?php
+            if ($pag < $num_pag):
+        ?>  
+            <a class="boton" href="?pagina=<?php echo $pag + 1; ?>">Siguiente ➡</a>
+        <?php
+            endif;
+        ?>
+
+    Esto muestra que en la primera página no mostramos para dar a anterior, ya que no hay. Y para mostrar si hay más verificamos si la pagina en la que estamos es menor que el numero total de páginas , ya que si es igual nos encontramos en la última página.
+
+    Claro otra cosa es que utilizamos como se puede evr el método get para saber en que página nos encontramos actualmente, por lo que ahora tengo que actualizar el método eliminar , ya que al eliminar te mueve otra vez a la página inicial y no es la idea. Por eso le paso por el método get al eliminar la página en la que nos encontramos:
+
+        <a class="boton_admin" href="eliminar.php?id=<?php echo $actividad->id; ?>&pagina=<?php echo $pag; ?>">Eliminar</a>
+
+    Ahora tenemos que volver a modificar el eliminar de la forma:
+
+        if ($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            $actividad = Actividades::where("id", $_GET['id']);
+            $pag = $_GET['pagina'] ?? 1;
+
+            $resultado = $actividad->eliminar();
+
+            if ($resultado) {
+                header("Location: /admin/actividades.php?eliminar=exito&pagina=" . $pag);
+            } else {
+                header("Location: /admin/actividades.php?eliminar=error&pagina=" . $pag);
+            }
+        } else {
+            header("Location: /admin/actividades.php?eliminar=error&pagina=1");
+        }
+
+    Una vez hemos echo esto , cuando elimino una actividad te retorna en la página en la que estabas previamente. Además he añadido una verificación para que si quieres acceder a una página y no existe te devuelva a la primera de todas:
+
+        if( $pag > $num_pag)
+            header("Location: /admin/actividades.php?pagina=1");
+
+    Una vez ya he terminado la paginación puedo dar por concluida la parte del administrador ,es decir, la creación, eliminación y modificación de las actividades paso al punto 5, que es el menú de actividades de manera dinámica. Para esto , que es basicamente mostrar las actividades para todos los usuarios creo otra carpeta /actividades con un archivo dentro /actividades/actividades.php , este archivo se va a parecer mucho al que gestiona el administrador ya que es practivamente igual , la única diferencia es que el usuario no puede modificar nada de las actividades.
+
+    Haciendo un copia pega rápido quitando los botones del adminstrador podemos tener ya hecho todo lo que necesitamos , ahora queda hacer el ménu según las categorías. Ahora para gestionar el menú lateral voy a hacer primeramente esto:
+
+        <aside class="menu-lateral">
+            <p>Categorías</p>
+            <ul>
+                <p class="categoria">Principal:</p class="categoria">
+                <li><a href="actividades.php">Todo</a></li>
+                <p class="categoria">Por deporte:</p class="categoria">
+                    <li><a href="actividades.php?deporte=Futbol">Fútbol</a></li>
+                    <li><a href="actividades.php?deporte=Tenis">Tenis</a></li>
+                    <li><a href="actividades.php?deporte=Natacion">Natación</a></li>
+
+                <p class="categoria">Por modalidad:</p class="categoria">
+                    <li><a href="actividades.php?categoria=Individual">Individual</a></li>
+                    <li><a href="actividades.php?categoria=En Equipo">Equipo</a></li>
+            </ul>
+        </aside>
+
+    Así redirecciono con el get para asi poder luego filtrar segun la modalidad o el tipo. Ahora teniendo esto tengo que ver que hago cuando lo encuentro a través del GET, para ello utilizo:
+
+        if( isset($_GET['categoria'])){
+            $categoria = $_GET['categoria'];
+            $actividades = Actividades::encontrarCategoria($categoria);
+        }   
+
+        if( isset($_GET['deporte'])){
+            $deporte = $_GET['deporte'];
+            $actividades = Actividades::encontrarDeporte($deporte);
+        }
+    
+    He tenido que crear varias funciones que se traen todas las actividades según el filtro, dichas funciones son:
+
+        public static function encontrarCategoria($categoria){
+            $query = "SELECT * FROM " . static::$tabla  ." WHERE modalidad = '{$categoria}'";
+            $resultado = self::consultarSQL($query);
+            return $resultado;
+        }
+
+        public static function encontrarDeporte($deporte){
+            $query = "SELECT * FROM " . static::$tabla  ." WHERE tipo = '{$deporte}'";
+            $resultado = self::consultarSQL($query);
+            return $resultado;
+        }
+
+    Una vez ya tengo la forma de que las actividades que se muestran se filtren según el tipo o la modalidad, ahora sigue habiendo un problema y es que en la paginación si antes habia aplicado una categoría se pierde por lo que necesito que esa información se mantenga, para ello cuando sé que lo he recibido en el get hago respectivamente:
+
+        $extra .= '&categoria=' . urlencode($_GET['categoria']);
+        $extra .= '&deporte=' . urlencode($_GET['deporte']);
+
+    Cabe añadir que la función urlenconde() es necesario ya que una de las modalidades es "En Equipo" al tener un espacion es necesario hacer esto para que funciones de manera correcta.Con esto ya tengo forma de añadir la categoria o el deporte a la hora de hacer la paginación con la forma:
+
+        <?php if ($pag > 1): ?>  
+            <a class="boton" href="?pagina=<?php echo $pag - 1 . $extra ?>">⬅ Anterior</a>
+        <?php endif; ?>
+
+        <?php if ($pag < $num_pag): ?>  
+            <a class="boton" href="?pagina=<?php echo $pag + 1 . $extra ?>">Siguiente ➡</a>
+        <?php endif; ?>
+
+    Así también tengo en cuenta la categoría en la paginación. Ya he terminado la página actividades/actividades.php y ahora voy a hacer el que enseña cada imagen sola individualmente. Para ello he creado el archivo /actividades/actividad.php donde mostraré las imagenes, para hacerlo pasaré por el método get el id de la actividad:
+
+        <a href="actividad.php?id=<?php echo $actividad->id ?>">
+
+    Añadiendo eso en cada actividad ahora tengo que gestionarlo en actividad.php de la forma:
+
+        if ($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            if( isset($_GET['id'])){
+                $id = $_GET['id'];
+            }
+        }
+
+        $actividad = Actividades::where('id',$id);
+
+    Así ya tengo la actividad que quiero tener ahora una vez ya he hecho tengo que ver como lo muestro, y es de la forma:
+
+        <?php
+            if( $actividad->tipo == 'Futbol'):
+        ?>
+            <img class="banner" src="../imagen/futbol/futbol1.webp" alt="Fútbol">
+        <?php
+            endif;
+        ?>
+
+        <?php
+            if( $actividad->tipo == 'Natacion'):
+        ?>
+            <img class="banner" src="../imagen/natacion/natacion1.webp" alt="Fútbol">
+        <?php
+            endif;
+        ?>
+
+        <?php
+            if( $actividad->tipo == "Tenis"):
+        ?>
+            <img class="banner" src="../imagen/tenis/tenis1.webp" alt="Fútbol">
+        <?php
+            endif;
+        ?>
+
+        <section class="contenido-actividad">
+            <div class="info">
+                <h2><?php echo $actividad->tipo ?></h2>
+                <p><strong>Modalidad:</strong> <?php echo $actividad->modalidad ?></p>
+                <p><strong>Pistas:</strong><?php echo $actividad->pistas ?></p>
+            </div>
+        </section>
         
+    Una vez ya tengo como mostrar , ya puedo dar por finalizada toda esta parte, alomejor más tarde añado más información en la base de datos para que aparezco mucho más completo.
+
+    Ahora que ya he hecho esto he terminado con toda la parte de php , el próximo paso será hacer JS , haciendo el carrusel y la corección de todos los formulario.
+
+    Para hacer el formulario empezamos...
+
+
+    

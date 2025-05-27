@@ -142,7 +142,7 @@ class ActiveRecord {
         // Insertar en la base de datos
         $query = " INSERT INTO " . static::$tabla . " ( ";
         $query .= join(', ', array_keys($atributos));
-        $query .= " ) VALUES (' "; 
+        $query .= " ) VALUES ('"; 
         $query .= join("', '", array_values($atributos));
         $query .= " ') ";
 
@@ -158,7 +158,6 @@ class ActiveRecord {
     public function actualizar() {
         // Sanitizar los datos
         $atributos = $this->sanitizarAtributos();
-
         // Iterar para ir agregando cada campo de la BD
         $valores = [];
         foreach($atributos as $key => $value) {

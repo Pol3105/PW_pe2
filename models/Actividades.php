@@ -1,4 +1,3 @@
-
 <?php
 
 require_once('ActiveRecord.php');
@@ -18,5 +17,17 @@ class Actividades extends ActiveRecord{
         $this->tipo = $args['tipo'] ?? '';
         $this->modalidad = $args['modalidad'] ?? null;
         $this->pistas = $args['pistas'] ?? '';
+    }
+
+    public static function encontrarCategoria($categoria){
+        $query = "SELECT * FROM " . static::$tabla  ." WHERE modalidad = '{$categoria}'";
+        $resultado = self::consultarSQL($query);
+        return $resultado;
+    }
+
+    public static function encontrarDeporte($deporte){
+        $query = "SELECT * FROM " . static::$tabla  ." WHERE tipo = '{$deporte}'";
+        $resultado = self::consultarSQL($query);
+        return $resultado;
     }
 }

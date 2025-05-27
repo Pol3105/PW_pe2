@@ -1,6 +1,7 @@
 <?php
     require_once( __DIR__ . '/includes/database.php');
     require_once( __DIR__ . '/models/Usuario.php');
+    require_once( __DIR__ . '/models/Actividades.php');
 
     session_start();
     $alertas = [];
@@ -56,7 +57,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Practica 1</title>
+    <title>Practica 2</title>
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
@@ -64,7 +65,7 @@
     <header class="toolbar">
         <div class="referencias">
             <a class="boton" href="index.php">Inicio</a>
-            <a class="boton" href="actividades/actividades.html"> Actividades </a> 
+            <a class="boton" href="actividades/actividades.php"> Actividades </a> 
             <a class="boton" href="conocee_club.html"> Conoce nuestro club </a>  
             <a class="boton" href="evento.html"> Eventos Deportivos </a>  
             <a class="boton" href="informacion.html"> Información general </a>  
