@@ -52,11 +52,11 @@
     <header class="toolbar">
         <div class="referencias">
             <a class="boton" href="../index.php">Inicio</a>
-            <a class="boton" href="actividades.php"> Actividades </a> 
-            <a class="boton" href="conocee_club.html"> Conoce nuestro club </a>  
-            <a class="boton" href="evento.html"> Eventos Deportivos </a>  
-            <a class="boton" href="informacion.html"> Información general </a>  
-            <a class="boton" href="sugerencias.html"> Sugerencias </a>  
+            <a class="boton" href="../html/actividades.php"> Actividades </a> 
+            <a class="boton" href="../html/conocee_club.html"> Conoce nuestro club </a>  
+            <a class="boton" href="../html/evento.html"> Eventos Deportivos </a>  
+            <a class="boton" href="../html/informacion.html"> Información general </a>  
+            <a class="boton" href="../html/sugerencias.html"> Sugerencias </a>  
             <?php
                 if( isset($_SESSION['admin']) && $_SESSION['admin'] == 1 ):
             ?>

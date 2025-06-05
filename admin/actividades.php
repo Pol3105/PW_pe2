@@ -47,7 +47,6 @@
 <body>
 
     <nav class="toolbar">
-
         <div class="referencias">
             <a class="boton" href="../index.php">Volver</a>
         </div>

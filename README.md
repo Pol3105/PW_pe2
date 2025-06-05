@@ -4,6 +4,19 @@ Practica a realizar para PW , en tercero de carrera segundo cuatri.
 
 Pasos que he realizado para hacer la Practica de manera correcta:
 
+PRE: Antes de nada quiero explicar la clase ubicada en /models/ActiveRecord.php. Esta clase la he creado para centralizar y automatizar las operaciones básicas del CRUD (Crear, Leer, Actualizar y Borrar) en los modelos de mi aplicación.
+
+La idea es que cualquier clase que represente una tabla de la base de datos extienda de ActiveRecord. De este modo, hereda automáticamente todos los métodos necesarios para interactuar con la base de datos sin tener que escribir consultas SQL a mano.
+
+Es una manera fácil y muy ordenada de tener todo.
+
+    Objeto extends ActiveRecord{} // Esto en la cabezera para heradar la clase Active Record
+
+    protected static $tabla = 'Nombre_tabla';
+    protected static $columnasBD = ['columna1','columna2'];
+
+Mediante esto la clase que se hereda puede saber el nombre de la tabla y los atributos correspondientes que posee, así es como podrá hacer la clase ActiveRecord todas las operaciones correspondientes.
+
 1.- Primeramente he puesto el css , y las imagenes que había utilizado en la practica anterior , tras esto he pasado el index y lo he transformado en .php y he creado la tabla de usuarios que va a ser :
 
     CREATE TABLE usuario (
