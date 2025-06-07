@@ -89,9 +89,9 @@
                         placeholder="Tipo..."
                         name="tipo"
                         value="<?php echo $actividad->tipo ?>"
-                        required
                         />
                     </div>
+                    <p id="alerta_tipo"></p>
 
                     <div class="campo">
                         <label for="modalidad">Modalidad</label>
@@ -100,9 +100,9 @@
                         placeholder="Modalidad..."
                         name="modalidad"
                         value="<?php echo $actividad->modalidad ?>"
-                        required
                         />
                     </div>
+                    <p id="alerta_modalidad"></p>
                     
                     <div class="campo">
                         <label for="pistas">Pistas</label>
@@ -111,9 +111,10 @@
                         placeholder="Pistas..."
                         name="pistas"
                         value="<?php echo $actividad->pistas ?>"
-                        required
                         />
                     </div>
+                    <p id="alerta_pista"></p>
+
                     <?php
                         if( $actividad->id):
                     ?>
@@ -134,12 +135,16 @@
 
     <footer class="toolbar">
         <div class="referencias">
-            <a class="boton" href="../../contacto.html"> Contactanos </a>
-            <a class="boton" href="../../como_se_hizo.pdf">¿Cómo se hizo?</a>
+            <a class="boton" href="../html/contacto.html"> Contactanos </a>
+            <a class="boton" href="../como_se_hizo.pdf">¿Cómo se hizo?</a>
         </div>
     </footer>
 
             
 </body>
+
+<script src="../javascript/actividades.js"></script>
+
+
 </html>
 

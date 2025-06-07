@@ -7,7 +7,7 @@
     $alertas = [];
     $registro = 0;
 
-    // Muestra de mensaje correcto cuando se registra un usuario
+    // Muestra de mensajes
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET')
     {
@@ -32,25 +32,37 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
         $encontrado = Usuario::where("email", $_POST['email']);
-    
-        $contraseña_correcta = $encontrado->ComprobacionContraseña($_POST['contraseña']);
 
-        // Si ambas comprobaciones son correctas el inicio de sesión se hace de manera correcta
-        if( $encontrado && $contraseña_correcta ){
-            $_SESSION['id'] = $encontrado->id;
-            $_SESSION['nombre'] = $encontrado->nombre;
-            $_SESSION['email'] = $encontrado->email;
-            $_SESSION['admin'] = $encontrado->admin;
+        if( $encontrado ){
+            $contraseña_correcta = $encontrado->ComprobacionContraseña($_POST['contraseña']);
 
-            Usuario::setAlerta('exito', 'Inicio de sesión realizado con exito');
-            $alertas = Usuario::getAlertas();
+            // Si ambas comprobaciones son correctas el inicio de sesión se hace de manera correcta
+            if( $encontrado && $contraseña_correcta ){
+                $_SESSION['id'] = $encontrado->id;
+                $_SESSION['nombre'] = $encontrado->nombre;
+                $_SESSION['email'] = $encontrado->email;
+                $_SESSION['admin'] = $encontrado->admin;
+
+                Usuario::setAlerta('exito', 'Inicio de sesión realizado con exito');
+                $alertas = Usuario::getAlertas();
+            }
+            else{
+                Usuario::setAlerta('error', 'El usuario no existe , o la contraseña es incorrecta');
+                $alertas = Usuario::getAlertas();
+            }
         }
         else{
             Usuario::setAlerta('error', 'El usuario no existe , o la contraseña es incorrecta');
             $alertas = Usuario::getAlertas();
         }
+    
+        
     }
 
+
+    // Carrusel de actividades
+    $actividades = Actividades::all();
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -107,9 +119,13 @@
         </div>
 
         
-        <div class="contenedor-app">
-
-            <div class="imagen"></div>
+        <div class="contenedor-app">    
+            <div>
+                <div id="carrusel-slides" class="carrusel-slides">
+                </div>
+                <p id="anterior" class="boton" >⬅ Anterior</p>
+                <p id="siguiente" class="boton">Siguiente ➡</p>
+            </div>
 
             <div class="app">
                 <?php
@@ -119,13 +135,13 @@
                 <form class="formulario" method="POST" action="index.php">
                     <div class="campo">
                         <label for="email">Email</label>
-                        <input type="email"
+                        <input type="text"
                         id="email"
                         placeholder="Email..."
                         name="email"
-                        required
                         />
                     </div>
+                    <p id="alerta_email"></p>
 
                     <div class="campo">
                         <label for="contraseña">Contraseña</label>
@@ -133,9 +149,10 @@
                         id="contraseña"
                         placeholder="Contraseña..."
                         name="contraseña"
-                        required
                         />
                     </div>
+
+                    <p id="alerta_contraseña"></p>
                     
                     <input type="submit" class="boton submit" value="Iniciar sesión">
                 
@@ -155,13 +172,77 @@
 
     <footer class="toolbar">
         <div class="referencias">
-            <a class="boton" href="contacto.html"> Contactanos </a>
+            <a class="boton" href="html/contacto.html"> Contactanos </a>
             <a class="boton" href="como_se_hizo.pdf">¿Como se hizo?</a>
         </div>
     </footer>
 
             
 </body>
+<script>
+
+    // Carrusel
+
+    const actividades = <?= json_encode($actividades) ?>;
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        const carruselSlides = document.getElementById("carrusel-slides");
+        const btnAnterior = document.getElementById("anterior");
+        const btnSiguiente = document.getElementById("siguiente");
+
+        let indiceActual = 0;
+
+        function mostrarActividad(index) {
+            if (!actividades.length) {
+                carruselSlides.innerHTML = "<p>No hay actividades disponibles</p>";
+                return;
+            }
+
+            const actividad = actividades[index];
+            let imagenSrc = "";
+            let altTexto = actividad.tipo;
+
+            if (actividad.tipo === 'Futbol') {
+                imagenSrc = 'imagen/futbol/futbol1.webp';
+            } else if (actividad.tipo === 'Natacion') {
+                imagenSrc = 'imagen/natacion/natacion1.webp';
+            } else if (actividad.tipo === 'Tenis') {
+                imagenSrc = 'imagen/tenis/tenis1.webp';
+            }
+
+            carruselSlides.innerHTML = `
+                <a href="actividades/actividad.php?id=${actividad.id}">
+                    <div class="actividad">
+                        <img src="${imagenSrc}" alt="${actividad.tipo}">
+                        <h3>${actividad.tipo}</h3>
+                        <p><strong>Modalidad:</strong> ${actividad.modalidad}</p>
+                        <p>Pistas: ${actividad.pistas}</p>
+                    </div>
+                </a>
+            `;
+        }
+
+
+        // Navegación circular
+        btnAnterior.addEventListener("click", () => {
+            indiceActual = (indiceActual - 1 + actividades.length) % actividades.length;
+            mostrarActividad(indiceActual);
+        });
+
+        btnSiguiente.addEventListener("click", () => {
+            indiceActual = (indiceActual + 1) % actividades.length;
+            mostrarActividad(indiceActual);
+        });
+
+
+        // Inicializar carrusel
+        mostrarActividad(indiceActual);
+    });
+
+</script>
+<script src="javascript/inicio.js"></script>
+<script src="javascript/carrusel.js"></script>
+
 </html>
 
 

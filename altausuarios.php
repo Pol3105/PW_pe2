@@ -42,11 +42,16 @@
     <nav class="toolbar">
         <div class="referencias">
             <a class="boton" href="index.php">Inicio</a>
-            <a class="boton" href="actividades/actividades.html"> Actividades </a> 
-            <a class="boton" href="conocee_club.html"> Conoce nuestro club </a>  
-            <a class="boton" href="evento.html"> Eventos Deportivos </a>  
-            <a class="boton" href="informacion.html"> Información general </a>  
-            <a class="boton" href="sugerencias.html"> Sugerencias </a>  
+            <a class="boton" href="actividades/actividades.php"> Actividades </a> 
+            <a class="boton" href="html/conocee_club.html"> Conoce nuestro club </a>  
+            <a class="boton" href="html/evento.html"> Eventos Deportivos </a>  
+            <a class="boton" href="html/informacion.html"> Información general </a>  
+            <a class="boton" href="html/sugerencias.html"> Sugerencias </a>  
+            <?php
+                if( isset($_SESSION['admin']) && $_SESSION['admin'] == 1 ):
+            ?>
+                <a class="boton" href="/admin/actividades.php"> Admin </a> 
+            <?php endif; ?>
 
         </div>
     </nav>
@@ -68,12 +73,13 @@
                 <form class="formulario" method="POST" action="altausuarios.php">
                     <div class="campo">
                         <label for="email">Email</label>
-                        <input type="email"
+                        <input type="text"
                         id="email"
                         placeholder="Email..."
                         name="email"
                         />
                     </div>
+                    <p id="alerta_email"></p>
 
                     <div class="campo">
                         <label for="nombre">Nombre</label>
@@ -84,6 +90,8 @@
                         />
                     </div>
 
+                    <p id="alerta_nombre"></p>
+
                     <div class="campo">
                         <label for="edad">Edad</label>
                         <input type="number"
@@ -93,6 +101,8 @@
                         />
                     </div>
 
+                    <p id="alerta_edad"></p>
+
                     <div class="campo">
                         <label for="contraseña">Contraseña</label>
                         <input type="password"
@@ -101,6 +111,8 @@
                         name="contraseña"
                         />
                     </div>
+
+                    <p id="alerta_contraseña"></p>
                     
                     <input type="submit" class="boton submit" value="Crear cuenta">
                 
@@ -115,18 +127,19 @@
         </div>
     </main>
 
-
-
-
     <footer class="toolbar">
         <div class="referencias">
-            <a class="boton" href="contacto.html"> Contactanos </a>
+            <a class="boton" href="html/contacto.html"> Contactanos </a>
             <a class="boton" href="como_se_hizo.pdf">¿Como se hizo?</a>
         </div>
     </footer>
 
             
 </body>
+
+<script src="javascript/altausuario.js"></script>
+
+
 </html>
 
 

@@ -1,6 +1,4 @@
 # PW_pe2
-Practica a realizar para PW , en tercero de carrera segundo cuatri.
-
 
 Pasos que he realizado para hacer la Practica de manera correcta:
 
@@ -537,7 +535,242 @@ Mediante esto la clase que se hereda puede saber el nombre de la tabla y los atr
 
     Ahora que ya he hecho esto he terminado con toda la parte de php , el próximo paso será hacer JS , haciendo el carrusel y la corección de todos los formulario.
 
-    Para hacer el formulario empezamos...
+    Para empezar con la validación de formularios con JS( JavaScript ) voy a comenzar con el formulario de registro de usuarios. Primeramente voy a quitar los campos required del html y cualquier comprobación de tipo original de html. Ahora voy a añadir al final la etiqueta <script></script>.
+
+    Depués de hacer esto introduco un :
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const formulario = document.querySelector('.formulario');
+
+        formulario.addEventListener('submit', function(e) {
+
+
+        });
+
+    }
+    );
+
+    
+
+    Primero encuentro mi formulario a partir de la clase que le he asignado, y después tengo que conseguir poder hacer referencia a cada cambo de la forma:
+
+    document.getElementById('email');
+    document.getElementById('nombre');
+    document.getElementById('edad');
+    document.getElementById('contraseña');
+
+    Antes de hacer nada también me he dado cuenta que voy a hacer un pequeño <p></p> con id para escribir en ellos cuando la validacion sea errónea , y con esto me refiero a:
+
+    <div class="campo">
+        <label for="email">Email</label>
+        <input type="text"
+        id="email"
+        placeholder="Email..."
+        name="email"
+        />
+    </div>
+    <p class="alerta_php error" id="alerta_email"></p>
+
+    Con esto puedo escribir en estos , ademas le he añadido una clase para darle estilo. Por lo tanto he añadido a java:
+
+    const alertaEmail = document.getElementById('alerta_email');
+    const alertaNombre = document.getElementById('alerta_nombre');
+    const alertaEdad = document.getElementById('alerta_edad');
+    const alertaContraseña = document.getElementById('alerta_contraseña');
+
+    Una vez ya he encontrado todos los campos del formulario tengo que ver que validaciones le voy a aplicar a cada uno de los campos para ello voy a hacer una función de validacion individual para cada uno:
+
+    -Validación email:
+    function validarEmail() {
+        const email = document.getElementById('email').value.trim();
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (email === '') {
+            alertaEmail.textContent = 'El email es obligatorio';
+            return false;
+        } else if (!re.test(email)) {
+            alertaEmail.textContent = 'Por favor ingresa un email válido';
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    He hecho una función que si es correcta devolvera true, y sino pone en el mensaje de debajo del input el mensaje correspondiente con una validación del email y si de está vacío ahora hago lo mismo con el nombre.
+
+    -Validación nombre
+
+    function validarNombre() {
+        const nombre = document.getElementById('nombre').value.trim();
+        
+        if (nombre === '') {
+            alertaNombre.textContent = 'El nombre es obligatorio';
+            return false;
+        } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nombre)) {
+            alertaNombre.textContent = 'Solo se permiten letras y espacios';
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    -Validación Edad
+
+    function validarEdad() {
+        const edad = document.getElementById('edad').value.trim();
+        const numEdad = parseInt(edad);
+        
+        if (edad === '') {
+            alertaEdad.textContent = 'La edad es obligatoria';
+            return false;
+        } else if (isNaN(numEdad)) {
+            alertaEdad.textContent = 'Debe ser un número válido';
+            return false;
+        } else if (numEdad >= 12) {
+            alertaEdad.textContent = 'Debe ser mayor de 12 para registrarse';
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    -Validacion Contraseña
+
+    function validarContraseña() {
+        const contraseña = document.getElementById('contraseña').value.trim();
+        
+        if (contraseña === '') {
+            alertaContraseña.textContent = 'La contraseña es obligatoria';
+            return false;
+        } else if (contraseña.length < 6) {
+            alertaContraseña.textContent = 'Mínimo 6 caracteres';
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    Una vez ya tengo estas 4 funciones definidas , ahora vamos a hacer la función principal del formulario que es basicamente:
+
+    formulario.addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevenir envío para validar primero
+        
+        // Validar todos los campos
+        const emailValido = validarEmail();
+        const nombreValido = validarNombre();
+        const edadValido = validarEdad();
+        const contraseñaValido = validarContraseña();
+        
+        // Si todo es válido, enviar formulario
+        if (emailValido && nombreValido && edadValido && contraseñaValido) {
+            this.submit();
+        }
+    });
+
+    Primero evito el envío del formulario , y tras esto si las 4 validaciones son correctas , acepto el formulario.
+
+    Me he dado cuenta de varios errores , primeramente tengo mejor que añadir las clases y el texto de alerta desde java , y otra cuestión es que tengo que eliminarlo cuando me introduce bien el dato, de la forma:
+
+    function validarContraseña() {
+        const contraseña = document.getElementById('contraseña').value.trim();
+        
+        if (contraseña === '') {
+            alertaContraseña.textContent = 'La contraseña es obligatoria';
+            alertaContraseña.classList = "alerta_php error";
+            return false;
+        } else if (contraseña.length < 6) {
+            alertaContraseña.textContent = 'Mínimo 6 caracteres';
+            alertaContraseña.classList = "alerta_php error";
+            return false;
+        } else {
+            alertaContraseña.textContent = '';
+            alertaContraseña.classList = ''; // Limpia todas las clases
+            return true;
+        }
+    }
+
+    Así ya tenemos todas las verificaciones hecha. Ahora voy a pasar todo esto a un archivo externo para poder utilizarlo en el formulario del inicio de sesión, y el de las sugerencias. Lo importo de esta forma:
+
+    <script src="javascript/formulario.js"></script>
+
+    Ahora voy a ir al formulario de inicio de sesión que es exactamente igual , solo que no tiene la edad ni el nombre.
+
+    El siguiente formulario que voy a verificar es el de las sugerencias. Es basicamente igual así que he hecho otro archivo js y lo he modificado para sugerencias.
+
+    Ahora voy al que hay en Admin , al crear una actividad.
+
+    Ya he terminado de hacer todas las verificaciones de todos los formularios como se pide.
+
+    Ahora voy a pasar a hacer el carrusel de actividades:
+
+    Primeramente nos traemos las actividades de la basae de datos:
+
+        $actividades = Actividades::all();
+
+    Una vez ya tenemos las actividades en un array , tenemos que pasaselas a js, para ello vamos a utiliza:
+
+        const actividades = <?= json_encode($actividades) ?>;
+
+    Una vez ya tenemos las actividades , solo tenemos que mostrar las actividades moviendonos por el array para ello he hecho una funcion:
+
+        function mostrarActividad(index) {
+            if (!actividades.length) {
+                carruselSlides.innerHTML = "<p>No hay actividades disponibles</p>";
+                return;
+            }
+
+            const actividad = actividades[index];
+            let imagenSrc = "";
+            let altTexto = actividad.tipo;
+
+            if (actividad.tipo === 'Futbol') {
+                imagenSrc = 'imagen/futbol/futbol1.webp';
+            } else if (actividad.tipo === 'Natacion') {
+                imagenSrc = 'imagen/natacion/natacion1.webp';
+            } else if (actividad.tipo === 'Tenis') {
+                imagenSrc = 'imagen/tenis/tenis1.webp';
+            }
+
+            carruselSlides.innerHTML = `
+                <div class="actividad">
+                    <img src="${imagenSrc}" alt="${altTexto}">
+                    <h3>${actividad.tipo}</h3>
+                    <p><strong>Modalidad:</strong> ${actividad.modalidad}</p>
+                    <p><strong>Pistas:</strong> ${actividad.pistas.trim()}</p>
+                </div>
+            `;
+        }
+
+    Así muestro la actividad según un indice, ahora lo que tengo que hacer es ver como aumento el indice o lo disminuyo:
+
+        // Navegación circular
+        btnAnterior.addEventListener("click", () => {
+            indiceActual = (indiceActual - 1 + actividades.length) % actividades.length;
+            mostrarActividad(indiceActual);
+        });
+
+        btnSiguiente.addEventListener("click", () => {
+            indiceActual = (indiceActual + 1) % actividades.length;
+            mostrarActividad(indiceActual);
+        });
+
+    Así conseguimos una navegaación circular. Para finalmente hacer que se redirija a la actividad tengo que añadir:
+
+        carruselSlides.innerHTML = `
+            <a href="actividades/actividad.php?id=${actividad.id}">
+                <div class="actividad">
+                    <img src="${imagenSrc}" alt="${actividad.tipo}">
+                    <h3>${actividad.tipo}</h3>
+                    <p><strong>Modalidad:</strong> ${actividad.modalidad}</p>
+                    <p>Pistas: ${actividad.pistas}</p>
+                </div>
+            </a>
+        `;
+
+    Una vez hecho esto ya he finalizadao la práctica II de PW de manera completa y cumpliendo paso a paso lo que se solicita en el pdf.
+
+
 
 
     

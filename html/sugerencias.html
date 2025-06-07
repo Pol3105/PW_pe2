@@ -47,17 +47,19 @@
             <h3>¿Tienes algo que decirnos?</h3>
             <p class="">Déjanos tu experiencia, sugerencia u opinión. ¡Te leemos!</p>
 
-            <form class="formulario" action="#" method="post">
+            <form class="formulario" action="sugerencias.html" method="post">
 
                 <div class="campo">
                     <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" required>
+                    <input type="text" id="nombre" name="nombre" >
                 </div>
+                <p id="alerta_nombre"></p>
 
                 <div class="campo">
                     <label for="mensaje">Tu sugerencia:</label>
-                    <textarea id="mensaje" name="mensaje" rows="5" required></textarea>
+                    <textarea id="sugerencia" name="mensaje" rows="5"></textarea>
                 </div>
+                <p id="alerta_sugerencia"></p>
 
                 <div class="boton-sugerencia">
                     <input type="submit" class="boton" value="Enviar sugerencia">
@@ -70,11 +72,14 @@
     <footer class="toolbar">
         <div class="referencias">
             <a class="boton" href="contacto.html"> Contactanos </a>
-            <a class="boton" href="como_se_hizo.pdf">¿Cómo se hizo?</a>
+            <a class="boton" href="../como_se_hizo.pdf">¿Cómo se hizo?</a>
         </div>
     </footer>
 
             
 </body>
+
+<script src="../javascript/sugerencias.js"></script>
+
 </html>
 

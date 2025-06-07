@@ -141,7 +141,7 @@
     
     <footer class="toolbar">
         <div class="referencias">
-            <a class="boton" href="../contacto.html"> Contactanos </a>
+            <a class="boton" href="../html/contacto.html"> Contactanos </a>
             <a class="boton" href="../como_se_hizo.pdf">¿Cómo se hizo?</a>
         </div>
     </footer>
