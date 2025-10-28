@@ -1,52 +1,52 @@
 # 🚀 PW_pe2
 
-Esta es la **Práctica II de la asignatura PW**, una aplicación web para gestionar **usuarios** y **actividades**, desarrollada con PHP, MySQL y JavaScript.
+This is **Practical Assignment II for the Web Programming course (PW)**, a web application to manage **users** and **activities**, developed with PHP, MySQL, and JavaScript.
 
 ---
 
-## 🗂 Estructura y conceptos principales
+## 🗂 Structure and Key Concepts
 
-- ✅ Uso de **ActiveRecord** (`/models/ActiveRecord.php`) para centralizar operaciones CRUD.
-- Cada tabla de la base de datos tiene su **clase correspondiente** que extiende `ActiveRecord`.
-- Tablas principales:  
-  - `usuario` → gestión de usuarios y roles.  
-  - `actividades` → gestión de actividades y categorías.
-
----
-
-## 🛠 Funcionalidades
-
-### 👤 Gestión de usuarios
-- Registro de usuarios con **hash de contraseñas**.
-- Inicio de sesión y logout.
-- Diferenciación entre **usuario normal** y **administrador**.
-
-### 🏢 Administración de actividades
-- Crear, modificar y eliminar actividades.
-- **Paginación dinámica** de actividades.
-- Filtrado por **deporte** o **modalidad**.
-- Acceso exclusivo para **administradores**.
-
-### 🖥 Interfaz y validación
-- Validación de formularios con **JavaScript**.
-- Carrusel dinámico de actividades con **navegación circular**.
-- Plantillas (`templates`) para alertas y control de acceso.
+- ✅ Use of **ActiveRecord** (`/models/ActiveRecord.php`) to centralize CRUD operations.  
+- Each database table has its **corresponding class** extending `ActiveRecord`.  
+- Main tables:  
+  - `usuario` → user and role management.  
+  - `actividades` → activity and category management.
 
 ---
 
-## 💻 Tecnologías utilizadas
+## 🛠 Features
 
-- PHP (MVC y ActiveRecord)  
+### 👤 User Management
+- User registration with **password hashing**.  
+- Login and logout functionality.  
+- Differentiation between **normal users** and **administrators**.
+
+### 🏢 Activity Administration
+- Create, edit, and delete activities.  
+- **Dynamic pagination** for activities.  
+- Filtering by **sport** or **modality**.  
+- Exclusive access for **administrators**.
+
+### 🖥 Interface and Validation
+- Form validation using **JavaScript**.  
+- Dynamic activity carousel with **circular navigation**.  
+- Templates for alerts and access control.
+
+---
+
+## 💻 Technologies Used
+
+- PHP (MVC and ActiveRecord)  
 - MySQL  
-- JavaScript (validaciones y carrusel)  
+- JavaScript (validation and carousel)  
 - HTML / CSS / SCSS  
 
 ---
 
-## 🎓 Cosas que he aprendido
+## 🎓 What I Learned
 
-- Simplificar operaciones de base de datos usando **ActiveRecord**.  
-- Gestión de **sesiones** y roles de usuario.  
-- Validación de formularios con **JavaScript**.  
-- Creación de interfaces dinámicas con **carrusel y filtros**.  
-- Paginación de datos y control de acceso de **administrador**.  
+- Simplifying database operations using **ActiveRecord**.  
+- Managing **sessions** and user roles.  
+- Form validation with **JavaScript**.  
+- Creating dynamic interfaces with **carousel and filters**.  
+- Pagination of data and **administrator access control**.
